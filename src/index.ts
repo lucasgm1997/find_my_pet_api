@@ -7,12 +7,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const pool = new Pool({
-    port: 5433,
+    port: 5432,
     password: '123456',
-    user: 'postgres',
-    host: 'localhost',
+    user: 'admin',
+    host: 'postgres_db',
     database: 'find_my_pet'
 });
+
 
 app.get('/', (req, res) => {
     res.send('Hello World with TypeScript!');
@@ -20,10 +21,19 @@ app.get('/', (req, res) => {
 
 
 app.get('/users', async (req, res) => {
-    const client  = await pool.connect()
     let users:Array<any> = [];
+    try {
+    const client  = await pool.connect()
 
-    const result  = await pool.query('SELECT * FROM users ORDER BY id ASC')
+        const result  = await client.query('SELECT * FROM users')
+        result.rows.forEach((user) => {
+            users.push(user);
+        })
+    } catch (error) {
+        console.error(`Algum erro: ${error}`);
+    }
+
+    const result  = await pool.query('SELECT * FROM users')
     result.rows.forEach((user) => {
         users.push(user);
     })

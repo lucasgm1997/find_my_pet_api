@@ -1,0 +1,21 @@
+
+# Use uma imagem base do Node.js
+FROM node:20
+
+# Defina o diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copie os arquivos package.json e package-lock.json para o diretório de trabalho
+COPY package*.json ./
+
+# Instale as dependências
+RUN npm install
+
+# Copie o restante dos arquivos da aplicação para o diretório de trabalho
+COPY . .
+# Exponha a porta 3000 para que a aplicação seja acessível externamente
+EXPOSE 3000
+
+# Comando para iniciar a aplicação
+# CMD ["node", "app.js"]
+CMD ["npm", "run", "dev"]
