@@ -1,46 +1,34 @@
-import express from 'express';
-import {Pool} from 'pg';
+import express from "express"
+import userController from "./modules/user/user_controlller"
+import { errorHandler } from "./core/error/error_handler"
 
-const app = express();
-const PORT = 3000;
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const app = express()
+const PORT = 3000
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-const pool = new Pool({
-    port: 5432,
-    password: '123456',
-    user: 'admin',
-    host: 'postgres_db',
-    database: 'find_my_pet'
-});
+app.use(errorHandler)
 
+//user controller
+app.use("/users", userController)
 
-app.get('/', (req, res) => {
-    res.send('Hello World with TypeScript!');
-});
-
-
-app.get('/users', async (req, res) => {
-    let users:Array<any> = [];
-    try {
-    const client  = await pool.connect()
-
-        const result  = await client.query('SELECT * FROM users')
-        result.rows.forEach((user) => {
-            users.push(user);
-        })
-    } catch (error) {
-        console.error(`Algum erro: ${error}`);
-    }
-
-    const result  = await pool.query('SELECT * FROM users')
-    result.rows.forEach((user) => {
-        users.push(user);
-    })
-
-    res.json(users);
-});
+//end point to insert a new lost pet
+// app.post("/lost-pet", async (req, res) => {
+//     const { user_id, latitude, longitude } = req.body
+//     try {
+//         const client = await pool.connect()
+//         const result = await client.query(
+//             "INSERT INTO lost_pets (user_id, latitude, longitude) VALUES ($1, $2, $3)",
+//             [user_id, latitude, longitude]
+//         )
+//         res.json(result)
+//     } catch (error) {
+//         console.error(`Algum erro: ${error}`)
+//         // res.json({error: error});
+//         //
+//     }
+// })
 
 app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-});
+    console.log(`Server is running at http://localhost:${PORT}`)
+})

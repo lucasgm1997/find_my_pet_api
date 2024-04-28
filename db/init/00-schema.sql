@@ -6,6 +6,9 @@ BEGIN
     END IF;
 END $$;
 
+\c find_my_pet;
+
+
 -- Criação da tabela 'users'
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -14,11 +17,8 @@ CREATE TABLE IF NOT EXISTS users (
     phone_number VARCHAR(20) NOT NULL
 );
 
--- -- Inserção de três linhas na tabela 'users'
-INSERT IGNORE INTO users (name, email, phone_number) VALUES
-    ('Alice', 'alice@example.com', '1234567890'),
-    ('Bob', 'bob@example.com', '0987654321'),
-    ('Charlie', 'charlie@example.com', '1231231234');
+create unique index if not exists idx_users_email on users(email);
+
 
 -- create table lost_pets if not exists
 -- columns: id auto increment, latitude, longitude, name?, breed?, age?
@@ -30,9 +30,11 @@ CREATE TABLE IF NOT EXISTS lost_pets (
     name VARCHAR(100),
     breed VARCHAR(100),
     age INTEGER,
-    user_id INTEGER REFERENCES users(id),
+    -- constraint to delete lost_pets when user is deleted
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     status VARCHAR(100)
 );
+
 
 -- create table if not exists found_pets
 -- columns: id auto increment, latitude, longitude, name?, breed?, age?
@@ -44,7 +46,8 @@ CREATE TABLE IF NOT EXISTS found_pets (
     name VARCHAR(100),
     breed VARCHAR(100),
     age INTEGER,
-    user_id INTEGER REFERENCES users(id),
+    -- constraint to delete found_pets when user is deleted
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     status VARCHAR(100)
 );
 
@@ -56,16 +59,6 @@ CREATE TABLE IF NOT EXISTS pet_matches (
     found_pet_id INTEGER REFERENCES found_pets(id)
 );
 
-
-INSERT IGNORE INTO lost_pets (latitude, longitude, name, breed, age, user_id, status) 
-VALUES 
-    (37.7749, -122.4194, 'Max', 'Golden Retriever', 3, 1, 'Lost'),
-    (40.7128, -74.0060, 'Bella', 'Siamese', 2, 2, 'Lost');
-
-INSERT IGNORE INTO found_pets (latitude, longitude, name, breed, age, user_id, status) 
-VALUES 
-    (37.7749, -122.4194, 'Luna', 'Labrador', 4, 3, 'Found'),
-    (40.7128, -74.0060, 'Charlie', 'German Shepherd', 1, 1, 'Found');
 
 
 -- Adiciona índices

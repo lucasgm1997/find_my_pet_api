@@ -1,41 +1,41 @@
 version: "3"
 
 services:
-  # Serviço para a aplicação Node.js com Express
-  node_app:
-    build:
-      context: .
-      dockerfile: Dockerfile.node
-    ports:
-      - "3000:3000" # Mapeia a porta 3000 do host para a porta 3000 do container
-    volumes:
-      - .:/app # Monta o diretório atual como volume no container para permitir atualizações em tempo real durante o desenvolvimento
-    networks:
-      - my_network
-    depends_on:
-      - postgres_db # Dependência no serviço do banco de dados PostgreSQL
+    # Serviço para a aplicação Node.js com Express
+    node_app:
+        build:
+            context: .
+            dockerfile: Dockerfile.node
+        ports:
+            - "3000:3000" # Mapeia a porta 3000 do host para a porta 3000 do container
+        volumes:
+            - .:/app # Monta o diretório atual como volume no container para permitir atualizações em tempo real durante o desenvolvimento
+        networks:
+            - my_network
+        depends_on:
+            - postgres_db # Dependência no serviço do banco de dados PostgreSQL
 
-  # Serviço para o banco de dados PostgreSQL
-  postgres_db:
-    container_name: findmypet-db
-    # image: postgres:latest
-    build:
-      context: ./db
-      dockerfile: Dockerfile.pg
-    environment:
-      POSTGRES_USER: admin # Substitua pelo usuário desejado
-      POSTGRES_PASSWORD: 123456 # Substitua pela senha desejada
-      POSTGRES_DB: find_my_pet # Substitua pelo nome do banco de dados desejado
-    ports:
-      - "5432:5432" # Mapeia a porta 5432 do host para a porta 5432 do container
-    networks:
-      - my_network
-    volumes:
-      - pgdata:/var/lib/postgresql/data # Persiste os dados do banco de dados
+    # Serviço para o banco de dados PostgreSQL
+    postgres_db:
+        container_name: findmypet-db
+        # image: postgres:latest
+        build:
+            context: ./db
+            dockerfile: Dockerfile.pg
+        environment:
+            POSTGRES_USER: admin # Substitua pelo usuário desejado
+            POSTGRES_PASSWORD: 123456 # Substitua pela senha desejada
+            POSTGRES_DB: find_my_pet # Substitua pelo nome do banco de dados desejado
+        ports:
+            - "5432:5432" # Mapeia a porta 5432 do host para a porta 5432 do container
+        networks:
+            - my_network
+        volumes:
+            - pgdata:/var/lib/postgresql/data # Persiste os dados do banco de dados
 
 # Volume para persistir os dados do PostgreSQL
 volumes:
-  pgdata:
+    pgdata:
 
 networks:
-  my_network:
+    my_network:

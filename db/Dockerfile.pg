@@ -10,4 +10,4 @@ ENV POSTGRES_DB=find_my_pet
 EXPOSE 5432
 
 # Copie o arquivo SQL para inicialização do banco de dados
-COPY init.sql /docker-entrypoint-initdb.d/
+COPY ./init/ /docker-entrypoint-initdb.d/
